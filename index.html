@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>In a program where nobody looks after anybody, here&#x27;s what I can actually do — Hyeok</title>
+<meta name="description" content="Reviewing government settlement documents for a living: why the guidelines can&#x27;t be followed, why handing judgment to an LLM cost us our coworkers&#x27; trust before it cost us accuracy, and what I built after splitting reading from deciding.">
+<!-- Keep this page out of search results. Crawling stays allowed on purpose:
+     a blocked crawler never reads this tag, and the URL gets listed anyway. -->
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+<link rel="alternate" hreflang="ko" href="ko/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#c9bcac;        /* warm taupe */
+  --bg-2:#bfb1a0;
+  --ink:#000;          /* all text */
+  --wine:#7b1e2e;      /* burgundy accent */
+  --white:#fff;        /* header, buttons */
+  --rule:#000;
+  --font:"Inter Tight","Noto Sans KR","Helvetica Neue",Helvetica,Arial,sans-serif;
+  color-scheme:light;
+}
+html[lang="ko"] body{word-break:keep-all}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--font);font-feature-settings:"tnum" 1;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{color:var(--wine)}
+::selection{background:var(--wine);color:var(--white)}
+.wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);column-gap:24px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--white);padding:8px 12px;z-index:99}
+.skip:focus{left:8px}
+.label{font:600 12px/1.4 var(--font);letter-spacing:.06em;text-transform:uppercase}
+
+.chip{background:var(--white);color:var(--ink);border:1px solid var(--ink);font:500 13px/1 var(--font);
+  text-decoration:none;display:inline-flex;align-items:center;gap:6px;padding:9px 12px;white-space:nowrap}
+.chip:hover{background:var(--ink);color:var(--white)}
+
+/* header */
+header.top{position:sticky;top:0;z-index:20;background:var(--white);border-bottom:1px solid var(--rule)}
+.top .wrap{display:flex;align-items:center;gap:20px;height:60px}
+.brand{font:700 18px/1 var(--font);letter-spacing:-.01em;text-decoration:none;margin-right:auto}
+.brand span{color:var(--wine)}
+.top .where{font:500 12px/1.4 var(--font);letter-spacing:.06em;text-transform:uppercase}
+.top a.gh{font-size:14px;font-weight:500;text-decoration:none}
+.top a.gh:hover{color:var(--wine)}
+.lang{display:flex;border:1px solid var(--ink)}
+.lang a{padding:7px 11px;text-decoration:none;font:500 12px/1 var(--font);white-space:nowrap}
+.lang a+a{border-left:1px solid var(--ink)}
+.lang a:hover{background:var(--bg-2);color:var(--ink)}
+.lang a[aria-current="page"]{background:var(--ink);color:var(--white)}
+
+/* article head */
+.art-head{padding:72px 0 0}
+.art-head .kicker{grid-column:1 / span 3;padding-top:10px}
+.art-head h1{grid-column:4 / span 9;font:700 clamp(40px,5.6vw,80px)/1.02 var(--font);letter-spacing:-.04em;margin:0;max-width:18ch}
+.art-head .dek{grid-column:4 / span 7;margin:28px 0 0;font-size:20px;line-height:1.5}
+.art-meta{grid-column:4 / span 9;display:flex;flex-wrap:wrap;gap:8px 24px;margin:32px 0 0;padding-top:14px;border-top:1px solid var(--rule);font-size:13px;font-weight:500}
+
+/* article body + contents */
+.art-body{grid-column:4 / span 7;padding:56px 0 0}
+.art-toc{grid-column:1 / span 3;padding:56px 0 0;position:sticky;top:76px;align-self:start}
+.art-toc .label{margin-bottom:12px}
+.art-toc ol{list-style:none;margin:0;padding:0;counter-reset:t}
+.art-toc li{counter-increment:t;border-top:1px solid var(--rule)}
+.art-toc a{display:grid;grid-template-columns:26px 1fr;gap:6px;padding:9px 0;text-decoration:none;font-size:13.5px;line-height:1.3}
+.art-toc a::before{content:counter(t,decimal-leading-zero);font-weight:700;font-size:11px;color:var(--wine)}
+.art-toc a:hover,.art-toc a[aria-current="true"]{color:var(--wine)}
+.art-body h2{font:700 clamp(28px,3.2vw,40px)/1.08 var(--font);letter-spacing:-.03em;margin:64px 0 20px;scroll-margin-top:80px}
+.art-body h2:first-child{margin-top:0}
+.art-body p{margin:0 0 20px;font-size:18px;line-height:1.66}
+.art-body p strong{font-weight:700}
+.art-body code{background:var(--white);border:1px solid var(--ink);padding:1px 5px;font:500 14px/1 ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-all}
+.art-body hr{border:0;border-top:1px solid var(--rule);margin:52px 0}
+.art-body .pull{font:700 26px/1.25 var(--font);letter-spacing:-.025em;color:var(--wine);margin:36px 0;padding-left:20px;border-left:3px solid var(--wine)}
+
+/* foot */
+.art-foot{padding:80px 0 0}
+.art-foot .grid{border-top:2px solid var(--rule);padding-top:20px}
+.art-foot .back{grid-column:4 / span 9;display:flex;flex-wrap:wrap;gap:8px}
+footer.bottom{padding:72px 0 28px;font-size:13px}
+footer.bottom .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid var(--rule);padding-top:20px}
+
+@media (max-width:960px){
+  .art-head h1,.art-head .dek,.art-meta,.art-body,.art-foot .back{grid-column:1 / -1}
+  .art-head .kicker{grid-column:1 / -1;margin-bottom:14px}
+  .art-toc{display:none}
+}
+@media (max-width:720px){
+  body{font-size:16px}
+  .wrap{padding:0 16px}
+  .grid{column-gap:12px}
+  .top .wrap{gap:12px}
+  .top .where{display:none}
+  .art-head{padding-top:40px}
+  .art-head .dek{font-size:18px}
+  .art-body{padding-top:40px}
+  .art-body p{font-size:17px}
+  .art-body .pull{font-size:21px;padding-left:14px}
+  .art-foot{padding-top:56px}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/">Hyeok<span>.</span></a>
+    <span class="where">Seoul, KR</span>
+    <div class="lang" aria-label="Language"><a href="/" aria-current="page">English</a><a href="ko/">한국어</a></div>
+    <a class="gh" href="https://github.com/Heeeok">GitHub ↗</a>
+  </div>
+</header>
+
+<main id="main">
+  <article>
+    <div class="wrap grid art-head">
+      <div class="kicker label">Written up from a talk</div>
+      <h1>In a program where nobody looks after anybody, here's what I can actually do</h1>
+      <p class="dek">Reviewing government settlement documents for a living: why the guidelines can't be followed, why handing judgment to an LLM cost us our coworkers' trust before it cost us accuracy, and what I built after splitting reading from deciding.</p>
+      <div class="art-meta">
+        <span>Nov 25, 2026</span><span>~15 min read</span>
+      </div>
+    </div>
+
+    <div class="wrap grid">
+      <nav class="art-toc" aria-label="Contents">
+        <div class="label">Contents</div>
+        <ol id="toc">
+          <li><a href="#on-being-a-researcher">On being a "researcher"</a></li>
+          <li><a href="#why-this-is-hard">Why this is hard</a></li>
+          <li><a href="#chinese-influencers-and-the-subcontracting-rule">Chinese influencers and the subcontracting rule</a></li>
+          <li><a href="#and-then-what-happens">And then what happens</a></li>
+          <li><a href="#everyone-is-frustrated-at-everyone">Everyone is frustrated at everyone</a></li>
+          <li><a href="#what-i-can-do">What I can do</a></li>
+          <li><a href="#what-masking-with-a-star-actually-means">What masking with a star actually means</a></li>
+          <li><a href="#the-first-approach-and-what-we-lost-before-accuracy">The first approach, and what we lost before accuracy</a></li>
+          <li><a href="#you-can-t-fix-a-black-box">You can't fix a black box</a></li>
+          <li><a href="#splitting-perception-from-judgment">Splitting perception from judgment</a></li>
+          <li><a href="#lean-and-the-problem-of-having-no-answer-key">Lean, and the problem of having no answer key</a></li>
+          <li><a href="#the-pipeline">The pipeline</a></li>
+          <li><a href="#the-five-hundred-page-invoice">The five-hundred-page invoice</a></li>
+          <li><a href="#where-i-m-stuck-right-now">Where I'm stuck right now</a></li>
+          <li><a href="#so">So</a></li>
+        </ol>
+      </nav>
+      <div class="art-body">
+        <p>Hi everyone. My name's Hyeok.</p>
+        <p>For those of you who still don't know what I do, even after that lousy title slide I made — I work on the export voucher team at an industry association. What we do is a government contract. The program supports companies that export, and our corner of it is reviewing settlement documents for categories like advertising and commercial video.</p>
+        <p>So that's what we do.</p>
+        <p>Yeah. That's what we do.</p>
+        <hr>
+        <h2 id="on-being-a-researcher">On being a "researcher"</h2>
+        <p>My title is researcher. In case you hadn't noticed. I'm a researcher.</p>
+        <p>But if you think about it, I'm not a cool researcher from a university lab or anything like that. At least from what I know, in Korean associations like ours, "researcher" is a lousy substitute name for a minimum wage worker.</p>
+        <p>There are basically two age groups. Twenty-five to early thirties, or people with a gap in their career. And then there's another group above that, people in their forties or fifties who are more or less done with their original career. So: minimum wage. That's what we do.</p>
+        <p>The funny thing is that even though I'm a researcher, what I was actually assigned to do is <strong>build a pipeline for document automation.</strong></p>
+        <hr>
+        <h2 id="why-this-is-hard">Why this is hard</h2>
+        <p>Like I said, we review settlement documents from companies. We receive a lot of different types of documents.</p>
+        <p>Guidelines come down from above. But here's the thing: it's one program, and two bureaus run it together. So there are two sets of guidelines. And it causes a huge amount of pain for everyone involved. Well — probably not for them. For us, and for the companies actually running the advertising. Those companies have to be hands-on with a guideline that is genuinely vague, and that really depends on how you interpret it.</p>
+        <p>I won't say which bureau is which. But one of them is very lenient. If it's not in the guideline, they'll just let it pass. That's a negative system.</p>
+        <p>The other one is a positive system. If it's not in the guideline, or if it goes against how they interpret the guideline for that case, it's not allowed.</p>
+        <p>And yet, oddly enough, companies can sign up for both.</p>
+        <hr>
+        <h2 id="chinese-influencers-and-the-subcontracting-rule">Chinese influencers and the subcontracting rule</h2>
+        <p>Let me give you a concrete example.</p>
+        <p>There's a clause in the guideline that restricts what we call 대대행 — an agency taking work and then outsourcing it to another company. The intent is clear. Marketing agencies are supposed to do the marketing. They can't just throw the work to somebody else, pretend they did something, and collect government money. It's a good idea.</p>
+        <p>It was a good idea, right up until they found out Chinese law doesn't allow that.</p>
+        <p>If you want to work with a Chinese influencer, you have to go through a local company first. You have to. Which, according to the guideline, makes it subcontracting.</p>
+        <p>Meta, Amazon, Qoo10, Xiaohongshu, Shopee. Dubai, Qatar, Europe, Poland. Different countries have different legislation, different platforms work differently. Influencer marketing is just one big piece of it. There are so many cases like this.</p>
+        <hr>
+        <h2 id="and-then-what-happens">And then what happens</h2>
+        <p>One company got really, really mad about this. And it came up in a parliamentary hearing. In front of politicians, in front of television cameras.</p>
+        <p>So the person who had to sit there gets reamed out. Then he reams out the people below him. And they ream out the people below them. A few steps down the stairs, that's where we get it. Maybe there are a few more steps below us, I don't know. But that's how it works.</p>
+        <p>Either way, regardless of the bureau, this is a huge waste of tax money, and I'm part of it. We live off a government contract and we get paid by the government contract. But it feels strange. It's closer to eating what came out of me. If you've heard the term circular economy — it's roughly that, with a worse analogy.</p>
+        <p>Anyway, it was painful. Companies are confused about what they're doing. I'm confused about what I'm doing. I can't understand the guideline, and on top of that I'm a college sophomore dropout from computer science. What the hell do I know about marketing? What do I know about advertising?</p>
+        <p>For the record, I pay for YouTube Premium specifically so I don't have to watch ads. Which means I get paid to look at advertising and I pay to not look at advertising. I'll watch a good ad. There are just some rather sloppy ones out there. Anyway, that's not actually what we do.</p>
+        <hr>
+        <h2 id="everyone-is-frustrated-at-everyone">Everyone is frustrated at everyone</h2>
+        <p>Nobody in this company, and nobody above it, fully understands what this is like.</p>
+        <p>The marketing agencies are probably frustrated at us. We're frustrated at everybody — the ones above and the ones below. And the people above are frustrated not because the program isn't working, but because they don't want any noise. Noise is the thing they fear most. Somebody straight up suing them. Because that hurts their career as a civil servant.</p>
+        <p>So nobody in any important role in this entire program cares about each other, or about the program. They're all just frustrated.</p>
+        <p>So what actually happens? I can't help it. We can hold meetings about changing the guideline. We can carry the companies' voices up. I don't go into those meetings myself, but when the people who do come back a few months later with a result, sometimes it's completely irrelevant. I'm sure even the people in that meeting were confused by the change. Not every time. But the guideline itself contains contradictory lines, so clearly nobody really cares.</p>
+        <p>That's how I feel, anyway.</p>
+        <hr>
+        <h2 id="what-i-can-do">What I can do</h2>
+        <p>Anyway, I can't help that. What I can do, given where we sit in this program, is help with <strong>a more efficient settlement review system.</strong></p>
+        <p>What we did before was just review every document by hand, and send companies messages through the website. There's a website where all of this is managed.</p>
+        <p>I have a lot of words to say about that website, but I'll skip it. I'll just say it's very poorly designed, it's old, and it doesn't work. Everyone complains about it, but nobody knows why. We don't even know who built it. I tried to look it up, but the bureau in charge wouldn't disclose the software company they outsourced it to. Apparently they maintain it too, though I'm not sure what exactly they're maintaining.</p>
+        <hr>
+        <h2 id="what-masking-with-a-star-actually-means">What masking with a star actually means</h2>
+        <p>Oh, hold on. They did make one change.</p>
+        <p>All those hacking incidents that happened recently — the media got really angry about them, and that got into the higher-ups' ears.</p>
+        <p>So here's what ended up happening in our program. Before, every time anyone in the system made a change to an ongoing case — say we completed a review and passed a settlement, or rejected one — our names went up on that list. Companies could see them. I was completely fine with that. My name isn't all that interesting. For a company it's just "this person rejected me." It's not a particularly rare name either, so I wasn't worried.</p>
+        <p>But it's still private data, and somebody — I don't know who, somebody at one of the bureaus — thought about it and came up with a change: blind the names.</p>
+        <p>Korean names are usually three syllables. Two, like mine, is a bit rare. Four is rarer. Five or six, you remember that person's name forever. Anyway, three is the most common. So what they landed on was <strong>putting a star in the middle of the name.</strong> For me, it masks my surname. So that's good. That's fine.</p>
+        <p>But I had my doubts about whether it was actually hidden.</p>
+        <p>So I checked. Without referring to any other files, just that one website with the masking on it.</p>
+        <p>It found every single person's name.</p>
+        <p>I stopped there. I didn't investigate any further, and I'm not going to write down how it works, because it's still like that.</p>
+        <p>The reason I'm telling you this is different. This is a design problem before it's a security problem. Putting a star on the screen isn't hiding something. It's making something look hidden. If you actually want to hide it, you stop sending it in the first place. If you don't make that distinction, what you end up with is a record that an action was taken, and an exposure that is still there.</p>
+        <p class="pull">Which is the same thing I'm going to keep saying for the rest of this talk. <strong>If you only fix what the output looks like and never look underneath it, you haven't fixed it. You've made it look fixed.</strong></p>
+        <hr>
+        <h2 id="the-first-approach-and-what-we-lost-before-accuracy">The first approach, and what we lost before accuracy</h2>
+        <p>Back to automation.</p>
+        <p>Before I took it over, the approach was this: give an LLM the guideline, give it the document, and prompt it to review this and review that, for this file and for that file.</p>
+        <p>The accuracy wasn't that high. But more importantly, there was something else.</p>
+        <p><strong>We were losing the users' trust.</strong> My coworkers' trust.</p>
+        <p>That was the crucial part. People can tolerate a wrong answer better than an answer where they can't see why. If the model says "this is rejected," the reviewer opens the document and checks it from the beginning anyway. And then there was no point automating it.</p>
+        <p>For what it's worth, the person who first proposed this idea got fired. Apparently not because of the project — that was a separate thing. Anyway.</p>
+        <p>I'm talking too much, aren't I? Let me keep going.</p>
+        <hr>
+        <h2 id="you-can-t-fix-a-black-box">You can't fix a black box</h2>
+        <p>So the project got handed over to me.</p>
+        <p>What I thought was: is this really the way? How do I improve this? Am I supposed to improve it just by changing the prompt?</p>
+        <p>Well, then let's analyze it. Let's find where the problem is coming from.</p>
+        <p>Which I couldn't do. LLMs are a black box. You don't know exactly what went wrong.</p>
+        <p>So I decided to <strong>divide the work.</strong></p>
+        <hr>
+        <h2 id="splitting-perception-from-judgment">Splitting perception from judgment</h2>
+        <p>The documents we receive are non-deterministic. They are very, very unique documents, I'd say. We do provide forms. But there are cases where companies don't use them, and that's just straight up deterministic. You see these documents and you think, how do you even make a mistake like that. And surprisingly that's almost a quarter of the cases.</p>
+        <p>Another quarter is probably simple mistakes. Forgetting the stamp, forgetting to turn in the required forms.</p>
+        <p>The other half is usually mistakes in their <strong>advertising proof documents.</strong> Invoices from Meta, result pages. You know how if you upload a YouTube video you can see all the interactions in the dashboard. We have to see whether the advertisement actually landed in that foreign country — that it wasn't just Koreans watching that ad. They forget to prove that. That's the other half.</p>
+        <p>So we do have forms, but there's a lot of deviance out there. Which means we need LLMs, which are good at understanding various types of forms. That's what they're good at.</p>
+        <p>But I couldn't trust their deterministic behavior. So I translated that part <strong>into rulebooks.</strong></p>
+        <hr>
+        <h2 id="lean-and-the-problem-of-having-no-answer-key">Lean, and the problem of having no answer key</h2>
+        <p>At first I tried to do it with Lean. Apparently that was a thing — I heard it from a highly respected friend who did the same thing in his research. There's a blog post about it called "Turning rulebooks into verified tools."</p>
+        <p>They did all this testing with LLMs, and apparently <strong>the model didn't really matter.</strong> What mattered was the rule set you build with Lean and Python. That's what achieved high accuracy. The rulebooks they used were things like Form 1040, the US tax form, and the NBA collective bargaining agreement.</p>
+        <p>But those are <strong>fairly well structured</strong> rulebooks to begin with. 1040 is just 1040. It has supporting documents you have to prove things with, obviously, but still.</p>
+        <p>Ours is different. Not completely different, but it was difficult to put our entire rule set into Lean. And <strong>finding the rule set was the hardest part.</strong></p>
+        <p>Here's the problem. <strong>We don't have the golden values.</strong> We don't know which interpretation is the right one. We do have a guide, and it's very well structured in terms of grammar. But applying it to an actual settlement review requires interpretation. Personal interpretation. That's the vague part.</p>
+        <p>So instead, <strong>I gave up on choosing what's right.</strong></p>
+        <p>What's wrong, on the other hand, is pretty certain. We have all these records of what we said no to and what we said yes to. Though those aren't golden values either. Humans make errors too, especially when they get busy. And now is exactly when we get busy.</p>
+        <p>We have about a thousand of them in total right now, and we expect eight thousand more to come by next February. Everyone's working day and night. I'm a developer and that's another story, but honestly I feel uncomfortable not working on that while they're all struggling, just looking at the sheer amount of settlements coming in. It's understandable, it's not my work. I just have to prove myself with the pipeline.</p>
+        <p>Anyway, <strong>their reviews are not the golden values.</strong> So what are the answers? I had to make the cases. In this case, what's wrong. In that case, what's wrong. If a document looks like this, it's wrong.</p>
+        <p>Simple arithmetic is the easy part. <strong>Extracting the values from those documents is the difficult part.</strong></p>
+        <p>And I don't think this is the agencies' fault. They're working day and night too, and this is an extracurricular activity for them. It's like doing volunteer hours to get a scholarship — the main part is the marketing, and this is them trying to get relatively easy money, which probably isn't so easy. They don't have much time to invest in learning these guidelines. Some do it well, especially if they're not new to this business. Some do it poorly because they are new to it. Completely understandable. And at the same time it kind of hurts all of us.</p>
+        <hr>
+        <h2 id="the-pipeline">The pipeline</h2>
+        <p>So I was able to increase the accuracy by adding multiple layers. Here's what it looks like now.</p>
+        <p><strong>Step 1: collection and normalization.</strong> We convert every file into PDF. That's another story — their files are HWP, which is the Korean standard, and converting that to PDF was a pain. Excel too. Images are usually left as images, but sometimes converted to PDF depending on how I feel that day. Anyway, we completely automated downloading them, converting them, dividing them into each review, and sharing them in the cloud.</p>
+        <p>This is what I first made when I joined the company, back in April or May. It was pretty easy. A simple TUI, TypeScript, Selenium, some Python. Just automation, really. You don't even have to open Chrome — you open that file, press settings, press download, and it pulls only the new stuff. To figure out what was new I had to download the Excel file there and compare it against the previous one. That's all part of the downloader pipeline.</p>
+        <p><strong>Step 2: classification.</strong> So we have all these PDFs. How do we decide what's what? For the most part, companies are kind enough to rename their documents into something identifiable. We buy that. We just straight up buy it, and we score them. If this document looks like this, put a 1 in front. If it looks like something else, put a 2. We label them by numbers, not by the names themselves.</p>
+        <p>But sometimes you can't. We have no idea what the document is. For example, the file name is <code>1509FFFFGHDP.096XGVCQERTT.pdf</code>. If it's like that, you can't know what it is until you open it. I didn't add OCR or PDF text scanning to this download process, so we just put 99 in front of it. After the download completes, everything is sorted, kind of, in the cloud.</p>
+        <p><strong>Step 3: cards.</strong> Now we use the LLM review I talked about before. Except we're not going to have it judge. We have the LLM read each case and determine what document it is, and <strong>only after that</strong> do we put the document's values in. We create a JSON file for each document, and I call these <strong>cards.</strong> It has all the values that document is supposed to have. Those forms must have something, right?</p>
+        <p>The LLM's job is to read the document, extract the values, and write them into the card. That's where it stops.</p>
+        <p><strong>Step 4: the rule set.</strong> The values pass on to the next pipeline. The rules calculate. Whether this value matches that value, whether the money matches the money, whether the FX rate matches the calculation, whether the FX date matches the date on the receipt, whether the requested amount matches.</p>
+        <p><strong>It worked.</strong> Honestly, I was surprised that it worked.</p>
+        <p><strong>Step 5: the result.</strong> Every rule has to pass. Even if every other rule passes, if that one rule doesn't, it's rejected. And it creates a text file as a result, with the message we'll copy and paste to the company.</p>
+        <hr>
+        <h2 id="the-five-hundred-page-invoice">The five-hundred-page invoice</h2>
+        <p>There was one wall in the middle of this.</p>
+        <p>Having an LLM scan through every single page is incredibly slow. It doesn't matter if there aren't many documents. But some documents are <strong>five hundred pages.</strong></p>
+        <p>Why? Because some companies don't use a marketing agency. They run ads on Meta themselves. And when they request a settlement for, let's say, three months' worth of Meta invoices, those invoices are irregular. It's not a single payment. It's: we paid this, this many views were served so this much was deducted, you withdrew some money, some money got refunded for whatever reason. All of that. So those documents go up to five hundred pages.</p>
+        <p>That's not an amount a human can read. How are we supposed to read that without the help of AI?</p>
+        <p>So I split it into steps. If the PDF has live text, we extract the text and put it into the LLM. That's great. If it doesn't, we run OCR. But OCR is sometimes imperfect, especially at low resolution. So OCR runs anyway, but <strong>only as a supplement to the LLM reading.</strong></p>
+        <p>And there are cases where the PDF contains image files inside it. Dashboard screenshots, for instance. You have to actually see those to determine what the values are. Those need the LLM.</p>
+        <p>What we need from the dashboard is actually pretty simple. The country, and the dates — whether the dates in the dashboard match the actual campaign length and the submission date. The targeting audience and the product, too. By product I mean either actual merchandise or a YouTube or Meta video, whatever the advertisement is.</p>
+        <hr>
+        <h2 id="where-i-m-stuck-right-now">Where I'm stuck right now</h2>
+        <p>So LLMs read the documents and create cards for each document and form, plus extra cards for the irregular ones that are non-deterministic and very diverse in structure. Then the values pass into the rule set.</p>
+        <p>It works. But certain parts still hurt. Especially <strong>missing fields.</strong></p>
+        <p>That's what I'm dealing with right now. It's not an extraction problem. It's the rule set I wrote. I put in a single rule, something like "if this is missing, reject." And then it applies to every single possible document. So if one of them misses anything, it just gets rejected.</p>
+        <p>But in reality — not in every case, but in many cases — <strong>that value is supplemented elsewhere.</strong> Another document proves it. In that case we pass it, saying it's proven elsewhere.</p>
+        <p>So the rule has to ask at the level of <strong>the case, not the document.</strong> Not "does this document have this field" but "is this fact proven anywhere in this case." That's what I'm fixing now.</p>
+        <p>And honestly, the way I'm handling the ambiguous ones right now — passing them all to a person — is <strong>lazy coding.</strong> I call it human review, but it's lazy coding. At some point this is going to have to resolve into either reject or pass. There are just so many varying cases that it's difficult to scale at that rate. I have to ship this fast. By February at least. I told them December, but it's already late.</p>
+        <hr>
+        <h2 id="so">So</h2>
+        <p>That's what I made, and it's still in production.</p>
+        <p>It's fun, honestly. Being the sole developer in a company where developing wasn't a thing.</p>
+        <p>I'm not even sure if I should label myself a developer, or a vibe coder, or an AI engineer. Certainly not that last one, in my opinion. Probably just a vibe coder — but one with extreme self-control and an oddly high sense of responsibility. Oddly high for my paycheck, that is.</p>
+        <p>At the same time, given my CV, I'm very grateful to have an opportunity like this. It's going to take time, but I'm pretty certain that one day this is going to happen. Unless the other guys lose hope in me and fire me, which sounds very unlikely, but might happen. Who knows. I hope it doesn't.</p>
+        <p>But, you know. That's what I'd say.</p>
+        <p>That's what I've done so far. Thank you.</p>
+      </div>
+    </div>
+  </article>
+
+  <section class="art-foot">
+    <div class="wrap grid">
+      <div class="back">
+        <a class="chip" href="https://github.com/Heeeok">GitHub · @Heeeok ↗</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="bottom">
+  <div class="wrap">
+    <span>© Hyeok</span>
+    <span>Taupe · Black · Burgundy · White</span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  // highlight the section you're reading in the contents
+  const links = [...document.querySelectorAll('#toc a')];
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) links.forEach(a => a.setAttribute('aria-current', a.getAttribute('href') === '#' + e.target.id));
+  }), { rootMargin: '-20% 0px -70% 0px' });
+  document.querySelectorAll('.art-body h2').forEach(h => io.observe(h));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+# Crawling is allowed on purpose: every page carries <meta name="robots" content="noindex">,
+# and a crawler blocked here would never read that tag — the URL would get listed anyway.
+User-agent: *
+Allow: /

@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>아무도 서로를 돌보지 않는 사업에서, 내가 할 수 있는 일 — Hyeok</title>
+<meta name="description" content="정부 지원사업 정산 서류를 검토하며 사는 이야기. 가이드라인을 왜 지킬 수 없는지, 판정을 LLM에게 맡겼다가 정확도보다 동료의 신뢰를 먼저 잃은 이유, 그리고 읽는 일과 정하는 일을 나눈 뒤 만든 것.">
+<!-- Keep this page out of search results. Crawling stays allowed on purpose:
+     a blocked crawler never reads this tag, and the URL gets listed anyway. -->
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+<link rel="alternate" hreflang="en" href="../">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#c9bcac;        /* warm taupe */
+  --bg-2:#bfb1a0;
+  --ink:#000;          /* all text */
+  --wine:#7b1e2e;      /* burgundy accent */
+  --white:#fff;        /* header, buttons */
+  --rule:#000;
+  --font:"Inter Tight","Noto Sans KR","Helvetica Neue",Helvetica,Arial,sans-serif;
+  color-scheme:light;
+}
+html[lang="ko"] body{word-break:keep-all}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--font);font-feature-settings:"tnum" 1;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{color:var(--wine)}
+::selection{background:var(--wine);color:var(--white)}
+.wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);column-gap:24px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--white);padding:8px 12px;z-index:99}
+.skip:focus{left:8px}
+.label{font:600 12px/1.4 var(--font);letter-spacing:.06em;text-transform:uppercase}
+
+.chip{background:var(--white);color:var(--ink);border:1px solid var(--ink);font:500 13px/1 var(--font);
+  text-decoration:none;display:inline-flex;align-items:center;gap:6px;padding:9px 12px;white-space:nowrap}
+.chip:hover{background:var(--ink);color:var(--white)}
+
+/* header */
+header.top{position:sticky;top:0;z-index:20;background:var(--white);border-bottom:1px solid var(--rule)}
+.top .wrap{display:flex;align-items:center;gap:20px;height:60px}
+.brand{font:700 18px/1 var(--font);letter-spacing:-.01em;text-decoration:none;margin-right:auto}
+.brand span{color:var(--wine)}
+.top .where{font:500 12px/1.4 var(--font);letter-spacing:.06em;text-transform:uppercase}
+.top a.gh{font-size:14px;font-weight:500;text-decoration:none}
+.top a.gh:hover{color:var(--wine)}
+.lang{display:flex;border:1px solid var(--ink)}
+.lang a{padding:7px 11px;text-decoration:none;font:500 12px/1 var(--font);white-space:nowrap}
+.lang a+a{border-left:1px solid var(--ink)}
+.lang a:hover{background:var(--bg-2);color:var(--ink)}
+.lang a[aria-current="page"]{background:var(--ink);color:var(--white)}
+
+/* article head */
+.art-head{padding:72px 0 0}
+.art-head .kicker{grid-column:1 / span 3;padding-top:10px}
+.art-head h1{grid-column:4 / span 9;font:700 clamp(40px,5.6vw,80px)/1.02 var(--font);letter-spacing:-.04em;margin:0;max-width:18ch}
+.art-head .dek{grid-column:4 / span 7;margin:28px 0 0;font-size:20px;line-height:1.5}
+.art-meta{grid-column:4 / span 9;display:flex;flex-wrap:wrap;gap:8px 24px;margin:32px 0 0;padding-top:14px;border-top:1px solid var(--rule);font-size:13px;font-weight:500}
+
+/* article body + contents */
+.art-body{grid-column:4 / span 7;padding:56px 0 0}
+.art-toc{grid-column:1 / span 3;padding:56px 0 0;position:sticky;top:76px;align-self:start}
+.art-toc .label{margin-bottom:12px}
+.art-toc ol{list-style:none;margin:0;padding:0;counter-reset:t}
+.art-toc li{counter-increment:t;border-top:1px solid var(--rule)}
+.art-toc a{display:grid;grid-template-columns:26px 1fr;gap:6px;padding:9px 0;text-decoration:none;font-size:13.5px;line-height:1.3}
+.art-toc a::before{content:counter(t,decimal-leading-zero);font-weight:700;font-size:11px;color:var(--wine)}
+.art-toc a:hover,.art-toc a[aria-current="true"]{color:var(--wine)}
+.art-body h2{font:700 clamp(28px,3.2vw,40px)/1.08 var(--font);letter-spacing:-.03em;margin:64px 0 20px;scroll-margin-top:80px}
+.art-body h2:first-child{margin-top:0}
+.art-body p{margin:0 0 20px;font-size:18px;line-height:1.66}
+.art-body p strong{font-weight:700}
+.art-body code{background:var(--white);border:1px solid var(--ink);padding:1px 5px;font:500 14px/1 ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-all}
+.art-body hr{border:0;border-top:1px solid var(--rule);margin:52px 0}
+.art-body .pull{font:700 26px/1.25 var(--font);letter-spacing:-.025em;color:var(--wine);margin:36px 0;padding-left:20px;border-left:3px solid var(--wine)}
+
+/* foot */
+.art-foot{padding:80px 0 0}
+.art-foot .grid{border-top:2px solid var(--rule);padding-top:20px}
+.art-foot .back{grid-column:4 / span 9;display:flex;flex-wrap:wrap;gap:8px}
+footer.bottom{padding:72px 0 28px;font-size:13px}
+footer.bottom .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid var(--rule);padding-top:20px}
+
+@media (max-width:960px){
+  .art-head h1,.art-head .dek,.art-meta,.art-body,.art-foot .back{grid-column:1 / -1}
+  .art-head .kicker{grid-column:1 / -1;margin-bottom:14px}
+  .art-toc{display:none}
+}
+@media (max-width:720px){
+  body{font-size:16px}
+  .wrap{padding:0 16px}
+  .grid{column-gap:12px}
+  .top .wrap{gap:12px}
+  .top .where{display:none}
+  .art-head{padding-top:40px}
+  .art-head .dek{font-size:18px}
+  .art-body{padding-top:40px}
+  .art-body p{font-size:17px}
+  .art-body .pull{font-size:21px;padding-left:14px}
+  .art-foot{padding-top:56px}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/ko/">Hyeok<span>.</span></a>
+    <span class="where">Seoul, KR</span>
+    <div class="lang" aria-label="Language"><a href="../">English</a><a href="/ko/" aria-current="page">한국어</a></div>
+    <a class="gh" href="https://github.com/Heeeok">GitHub ↗</a>
+  </div>
+</header>
+
+<main id="main">
+  <article>
+    <div class="wrap grid art-head">
+      <div class="kicker label">발표를 글로 옮김</div>
+      <h1>아무도 서로를 돌보지 않는 사업에서, 내가 할 수 있는 일</h1>
+      <p class="dek">정부 지원사업 정산 서류를 검토하며 사는 이야기. 가이드라인을 왜 지킬 수 없는지, 판정을 LLM에게 맡겼다가 정확도보다 동료의 신뢰를 먼저 잃은 이유, 그리고 읽는 일과 정하는 일을 나눈 뒤 만든 것.</p>
+      <div class="art-meta">
+        <span>2026.11.25</span><span>15분 분량</span>
+      </div>
+    </div>
+
+    <div class="wrap grid">
+      <nav class="art-toc" aria-label="목차">
+        <div class="label">목차</div>
+        <ol id="toc">
+          <li><a href="#section-1">연구원이라는 이름</a></li>
+          <li><a href="#section-2">왜 이게 어려운가</a></li>
+          <li><a href="#section-3">중국 인플루언서와 대대행</a></li>
+          <li><a href="#section-4">그다음에 벌어지는 일</a></li>
+          <li><a href="#section-5">모두가 서로에게 화나 있다</a></li>
+          <li><a href="#section-6">내가 할 수 있는 것</a></li>
+          <li><a href="#section-7">별표로 가린다는 것</a></li>
+          <li><a href="#section-8">처음 방식, 그리고 정확도보다 먼저 잃은 것</a></li>
+          <li><a href="#section-9">블랙박스는 고칠 수가 없다</a></li>
+          <li><a href="#section-10">인식과 판정을 가르다</a></li>
+          <li><a href="#lean">Lean, 그리고 정답이 없다는 문제</a></li>
+          <li><a href="#section-12">파이프라인</a></li>
+          <li><a href="#500">500페이지짜리 인보이스</a></li>
+          <li><a href="#section-14">지금 막혀 있는 곳</a></li>
+          <li><a href="#section-15">그래서</a></li>
+        </ol>
+      </nav>
+      <div class="art-body">
+        <p>안녕하세요. 혁입니다.</p>
+        <p>제가 만든 저 촌스러운 제목 장표를 보고도 제가 뭘 하는 사람인지 모르시겠다면, 설명드리겠습니다. 저는 어느 협회의 수출바우처 팀에 있습니다. 하는 일은 정부 사업입니다. 기업의 수출을 지원하는 사업이고, 그중 우리가 맡은 건 광고와 홍보영상 같은 분야의 정산 서류 검토입니다.</p>
+        <p>그게 우리가 하는 일입니다.</p>
+        <p>네. 그게 우리가 하는 일이에요.</p>
+        <hr>
+        <h2 id="section-1">연구원이라는 이름</h2>
+        <p>제 직함은 연구원입니다. 혹시 모르셨을까 봐 말씀드립니다. 저 연구원이에요.</p>
+        <p>그런데 생각해 보면, 대학 연구실에서 멋진 연구를 하는 그런 연구원이 아닙니다. 적어도 제가 아는 한, 이런 한국 협회들에서 연구원이라는 직함은 최저임금 노동자를 부르는 좀 그럴싸한 다른 이름입니다.</p>
+        <p>연령대도 대충 둘로 갈립니다. 스물다섯에서 서른 초반, 아니면 경력에 공백이 생긴 사람들. 그리고 그 위로 한 무리가 더 있는데 40대나 50대입니다. 원래 커리어는 어느 정도 정리가 된 분들이죠. 그래서 최저임금. 우리가 하는 일이 그렇습니다.</p>
+        <p>웃긴 건, 연구원인데 제가 실제로 배정받은 일은 <strong>서류 검토 자동화 파이프라인을 만드는 것</strong>이라는 점입니다.</p>
+        <hr>
+        <h2 id="section-2">왜 이게 어려운가</h2>
+        <p>말씀드렸듯이 우리는 기업이 낸 정산 서류를 검토합니다. 들어오는 서류의 종류가 아주 다양합니다.</p>
+        <p>가이드라인은 위에서 내려옵니다. 그런데 같은 하나의 사업인데 두 기관이 함께 운영합니다. 그래서 가이드라인이 둘입니다. 그리고 이게 관련된 사람들 모두에게 엄청난 고통을 줍니다. 정확히 말하면 그분들에게는 아니고, 우리에게, 그리고 실제로 광고를 집행하는 기업들에게요. 그 기업들은 이 모호하기 짝이 없는 가이드라인에 직접 부딪혀야 합니다. 읽는 사람이 어떻게 해석하느냐에 따라 결론이 완전히 달라지는 문서입니다.</p>
+        <p>둘 중 어느 쪽인지는 말하지 않겠습니다. 다만 한쪽은 아주 관대합니다. 가이드라인에 없으면 그냥 통과시킵니다. 네거티브 방식이죠.</p>
+        <p>다른 한쪽은 포지티브입니다. 가이드라인에 없으면, 혹은 이 사안에 대한 그들의 해석에 어긋나면, 안 됩니다.</p>
+        <p>그런데 묘하게도 기업은 양쪽 모두에 신청할 수 있습니다.</p>
+        <hr>
+        <h2 id="section-3">중국 인플루언서와 대대행</h2>
+        <p>구체적인 예를 하나 들겠습니다.</p>
+        <p>가이드라인에는 <strong>대대행</strong>을 제한하는 조항이 있습니다. 마케팅을 맡은 대행사가 그 일을 다시 다른 업체에 넘기는 것을 막는 조항입니다. 취지는 분명합니다. 대행사는 마케팅을 해야지, 일은 남에게 던져 놓고 자기가 한 척하면서 정부 돈을 받아 가면 안 되니까요. 좋은 생각이었습니다.</p>
+        <p>좋은 생각이었는데, 중국 법이 그걸 허용하지 않는다는 걸 나중에 알게 됩니다.</p>
+        <p>중국 인플루언서에게 광고를 맡기려면 현지 업체를 반드시 먼저 거쳐야 합니다. 그래야만 합니다. 그러면 가이드라인상으로는 그게 대대행이 됩니다.</p>
+        <p>메타, 아마존, 큐텐, 샤오홍슈, 쇼피. 두바이, 카타르, 유럽, 폴란드. 나라마다 플랫폼마다 사정이 다르고 법이 다릅니다. 인플루언서 마케팅은 그중 큰 축 하나일 뿐입니다. 이런 경우가 한둘이 아닙니다.</p>
+        <hr>
+        <h2 id="section-4">그다음에 벌어지는 일</h2>
+        <p>어느 기업 하나가 이것 때문에 단단히 화가 났습니다. 그리고 그 얘기가 국정감사 자리에서 나왔습니다. 정치인들 앞에서, 카메라 앞에서요.</p>
+        <p>그러면 그 자리에 불려 나간 분이 깨집니다. 그분이 밑에 있는 사람을 깹니다. 그 사람이 또 밑을 깹니다. 그렇게 몇 단계 내려오다 보면 우리 차례가 옵니다. 우리 밑으로도 몇 단계 더 있을지 모르지만, 어쨌든 그런 식으로 굴러갑니다.</p>
+        <p>기관이 어디든 상관없이, 이건 막대한 세금 낭비입니다. 그리고 저도 그 일부입니다. 우리가 정부 사업으로 먹고사는 건 맞지만, 기분은 좀 이상합니다. 내가 싼 걸 다시 내가 주워 먹는 구조에 가깝습니다. 순환 경제라는 말이 있다면, 대충 그 비슷한 걸로 봐 주셔도 됩니다.</p>
+        <p>어쨌든 괴로운 일이었습니다. 기업들은 자기가 뭘 하고 있는지 헷갈리고, 저도 제가 뭘 하고 있는지 헷갈립니다. 가이드라인을 이해할 수가 없습니다. 방금 들어온 데다가, 저는 컴퓨터공학과 2학년 중퇴입니다. 마케팅에 대해 제가 뭘 알겠습니까. 광고에 대해 제가 뭘 알겠어요.</p>
+        <p>참고로 저는 광고를 안 보려고 유튜브 프리미엄을 결제한 사람입니다. 광고를 보는 일로 돈을 벌면서, 광고를 안 보려고 돈을 내고 있는 겁니다. 좋은 광고는 봅니다. 다만 세상에는 좀 성의 없는 광고도 많으니까요. 뭐, 그건 우리가 하는 일과는 상관없는 얘기입니다만.</p>
+        <hr>
+        <h2 id="section-5">모두가 서로에게 화나 있다</h2>
+        <p>이 사업에서, 그리고 그 위에서, 이게 실제로 어떻게 돌아가는지를 온전히 이해하는 사람이 아무도 없습니다.</p>
+        <p>대행사들은 아마 우리에게 화가 나 있을 겁니다. 우리는 모두에게 화가 나 있습니다. 위에도, 아래에도요. 그리고 위에 계신 분들이 화가 난 이유는, 이 사업이 잘 안 돌아가서가 아닙니다. 시끄러워지는 게 싫어서입니다. 그분들이 제일 두려워하는 건 소란입니다. 누가 그냥 소송을 걸어 버리는 것. 그게 공무원으로서의 커리어에 흠이 되니까요.</p>
+        <p>그래서 이 사업에서 중요한 자리에 있는 사람들 중 누구도 서로를 돌보지 않습니다. 사업 자체를 돌보지도 않습니다. 그냥 다들 화가 나 있습니다.</p>
+        <p>그럼 실제로 무슨 일이 일어나느냐. 저는 어쩔 수가 없습니다. 가이드라인을 바꾸는 회의를 할 수는 있습니다. 기업들의 목소리를 모아서 전달할 수도 있고요. 저는 그 회의에 들어가지 않습니다만, 들어간 사람들이 몇 달 뒤에 결과를 들고 나오면 그게 전혀 엉뚱한 내용일 때가 있습니다. 그 회의에 있던 사람들조차 이 변경 사항에 당황했을 거라고 확신합니다. 매번 그렇다는 건 아닙니다. 하지만 가이드라인 안에 서로 모순되는 문장이 있는 걸 보면, 결국 아무도 신경 쓰지 않는 겁니다.</p>
+        <p>제가 느끼기에는 그렇습니다.</p>
+        <hr>
+        <h2 id="section-6">내가 할 수 있는 것</h2>
+        <p>어쨌든 그건 제가 어쩔 수 없는 일입니다. 하지만 이 사업 안에서 우리 자리가 어디인지를 생각하면, 제가 할 수 있는 일은 분명히 있습니다. <strong>더 효율적인 정산 검토 시스템</strong>입니다.</p>
+        <p>그전까지는 어떻게 했느냐. 그냥 서류를 하나하나 손으로 봤습니다. 그리고 사이트에서 메시지를 보냈습니다. 이 모든 걸 관리하는 웹사이트가 있거든요.</p>
+        <p>그 사이트에 대해서는 할 말이 많지만 넘어가겠습니다. 한마디로 설계가 엉망이고, 낡았고, 제대로 작동하지 않습니다. 다들 불평하는데 아무도 왜인지 모릅니다. 심지어 이걸 누가 만들었는지도 모릅니다. 찾아보려고 했는데, 담당 기관이 이 사이트를 만든 외주 업체를 공개하지 않더군요. 유지보수도 한다는데, 뭘 유지하고 있는 건지는 잘 모르겠습니다.</p>
+        <hr>
+        <h2 id="section-7">별표로 가린다는 것</h2>
+        <p>아, 잠깐만요. 변화가 하나 있긴 했습니다.</p>
+        <p>최근에 해킹 사고들이 연달아 터지면서 언론이 크게 떠들었죠. 그게 윗분들 귀에 들어갔습니다.</p>
+        <p>그래서 우리 사업에서 어떤 일이 일어났느냐. 원래는 누가 진행 중인 건에 변경을 가하면, 예를 들어 우리가 정산을 통과시키거나 반려하면, 그 목록에 우리 이름이 올라갔습니다. 기업에서도 볼 수 있었고요. 저는 괜찮았습니다. 제 이름이 뭐 대단한 것도 아니고. 기업 입장에서는 그냥 "저 사람이 날 반려했구나" 정도죠. 흔한 이름도 아니긴 하지만 크게 걱정하진 않았습니다.</p>
+        <p>그래도 개인정보는 개인정보니까, 어느 기관의 누군가가 그 생각을 했나 봅니다. 이름을 가리기로요.</p>
+        <p>한국 이름은 보통 세 글자입니다. 저처럼 두 글자는 좀 드물고, 네 글자는 더 드뭅니다. 다섯 글자, 여섯 글자는 한 번 보면 평생 기억에 남죠. 어쨌든 세 글자가 제일 흔합니다. 그래서 결론은 <strong>가운데 글자에 별표를 찍는 것</strong>이었습니다. 저는 두 글자라 성이 가려졌습니다. 그건 좋네요. 괜찮습니다.</p>
+        <p>그런데 저는 그게 정말 가려진 건지 의심이 들었습니다.</p>
+        <p>그래서 확인해 봤습니다. 다른 자료는 전혀 참조하지 않고, 별표가 찍혀 있는 그 사이트 하나만 두고요.</p>
+        <p>전부 나왔습니다. 한 사람도 빠짐없이요.</p>
+        <p>거기서 멈췄습니다. 더 파지 않았고, 어떻게 되는지는 여기 쓰지 않겠습니다. 아직 그대로니까요.</p>
+        <p>제가 이 얘기를 하는 이유는 따로 있습니다. 이건 보안 문제이기 전에 <strong>설계 문제</strong>이기 때문입니다. 화면에 별표를 찍는 건 가리는 게 아니라, 가린 것처럼 보이게 하는 겁니다. 정말로 가리려면 애초에 내보내지 않아야 합니다. 이 차이를 구분하지 않으면 조치했다는 기록만 남고 노출은 그대로 남습니다.</p>
+        <p class="pull">그리고 이건 제가 이 글에서 계속 하려는 얘기와 같은 구조입니다. <strong>보이는 결과만 맞춰 놓고 그 아래를 들여다보지 않으면, 고친 게 아니라 고친 것처럼 보이게 한 것입니다.</strong></p>
+        <hr>
+        <h2 id="section-8">처음 방식, 그리고 정확도보다 먼저 잃은 것</h2>
+        <p>자동화 얘기로 돌아오겠습니다.</p>
+        <p>제가 맡기 전에 쓰던 방식은 이랬습니다. LLM에게 가이드라인을 주고, 서류를 주고, 이것도 검토해 줘, 저것도 검토해 줘. 이 파일도, 저 파일도.</p>
+        <p>정확도가 높지 않았습니다. 그런데 더 중요한 건 따로 있었습니다.</p>
+        <p><strong>사용자의 신뢰를 잃고 있었습니다.</strong> 동료들의 신뢰요.</p>
+        <p>이게 결정적이었습니다. 사람은 틀린 답보다 <strong>왜 그렇게 나왔는지 모르는 답</strong>을 더 못 견딥니다. 모델이 "이건 반려입니다"라고 하면, 검토자는 그걸 확인하려고 결국 서류를 처음부터 다시 봅니다. 그러면 자동화를 한 의미가 없습니다.</p>
+        <p>참고로 이 아이디어를 처음 낸 사람은 해고됐습니다. 프로젝트 때문은 아니었던 것 같습니다. 그건 별개의 일이었어요. 어쨌든.</p>
+        <p>제가 말이 너무 많네요. 계속하겠습니다.</p>
+        <hr>
+        <h2 id="section-9">블랙박스는 고칠 수가 없다</h2>
+        <p>그렇게 이 프로젝트가 저에게 넘어왔습니다.</p>
+        <p>제가 생각한 건 이거였습니다. 정말 이게 맞는 방법인가? 어떻게 개선하지? 프롬프트를 바꾸는 걸로 개선이 되나?</p>
+        <p>그럼 분석을 해 보자. 문제가 어디서 오는지 보자.</p>
+        <p>분석할 수가 없었습니다. LLM은 블랙박스니까요. 정확히 뭐가 잘못됐는지 알 수가 없습니다.</p>
+        <p>그래서 <strong>일을 나누기로</strong> 했습니다.</p>
+        <hr>
+        <h2 id="section-10">인식과 판정을 가르다</h2>
+        <p>우리가 받는 서류는 비결정적입니다. 아주, 아주 제각각입니다. 우리가 제공하는 양식이 있긴 합니다. 그런데 그걸 안 쓰는 경우가 있어요. 그건 그냥 대놓고 확정적입니다. 기업들이, 이걸 어떻게 이렇게 틀리지 싶은 서류를 냅니다. 그게 놀랍게도 전체의 4분의 1쯤 됩니다.</p>
+        <p>또 다른 4분의 1은 단순 실수입니다. 도장을 빠뜨리거나, 내야 할 서류를 안 내거나.</p>
+        <p>나머지 절반은 보통 <strong>광고 집행 증빙</strong>입니다. 메타 인보이스, 결과 페이지 같은 것들이요. 유튜브에 영상을 올리면 대시보드에서 반응을 볼 수 있잖아요. 우리는 그 광고가 최소한 해당 외국에 도달했는지를 확인해야 합니다. 한국 사람만 그 광고를 본 게 아니라는 걸요. 그 증빙이 빠집니다. 그게 나머지 절반입니다.</p>
+        <p>그러니까 양식은 있지만 편차가 아주 큽니다. 그래서 다양한 형태를 이해하는 데 강한 LLM이 필요합니다. 그건 LLM이 잘하는 일이에요.</p>
+        <p>하지만 저는 LLM의 결정론적 행동을 믿을 수 없었습니다. 그래서 그 부분을 <strong>룰북으로</strong> 옮겼습니다.</p>
+        <hr>
+        <h2 id="lean">Lean, 그리고 정답이 없다는 문제</h2>
+        <p>처음에는 Lean으로 하려고 했습니다. 그런 게 실제로 있다는 걸 존경하는 친구에게 들었거든요. 자기 연구에서 같은 걸 했다고요. 규정집을 Lean으로 옮긴 글이 있습니다. 「Turning rulebooks into verified tools」라는 글입니다.</p>
+        <p>그 연구에서는 LLM으로 여러 테스트를 했는데, <strong>모델은 별로 중요하지 않았습니다.</strong> 중요한 건 Lean과 파이썬으로 짜 놓은 <strong>룰셋</strong>이었습니다. 그걸로 높은 정확도를 얻었고요. 다룬 규정집은 미국 세금 신고 서식인 Form 1040, 그리고 NBA 규약 같은 것들이었습니다.</p>
+        <p>그런데 그것들은 <strong>문장 자체가 꽤 잘 구조화된</strong> 규정집입니다. 1040은 그냥 1040이죠. 물론 증빙 서류가 따로 붙긴 하지만요.</p>
+        <p>우리 건 다릅니다. 완전히 다르다고까지는 못 해도, Lean으로 옮기기가 어려웠습니다. 그리고 <strong>룰셋을 찾아내는 것 자체가 제일 어려운 일</strong>이었습니다.</p>
+        <p>여기 문제가 있습니다. <strong>우리에게는 정답 값이 없습니다.</strong> 어떤 게 맞는 해석인지 우리도 모릅니다. 가이드라인은 있습니다. 문법적으로는 아주 잘 구조화되어 있어요. 그런데 그걸 실제 정산 검토에 적용하는 순간, 해석이 개입합니다. 개인의 해석에 크게 좌우됩니다. 그게 모호한 부분입니다.</p>
+        <p>그래서 저는 <strong>무엇이 옳은지를 고르는 걸 포기했습니다.</strong></p>
+        <p>대신 무엇이 틀렸는지는 꽤 확실합니다. 우리가 뭘 반려했고 뭘 통과시켰는지 기록이 다 있으니까요. 다만 그 기록도 정답은 아닙니다. 사람도 틀리거든요. 특히 바쁠 때요. 그리고 지금이 딱 그 바쁜 시기입니다.</p>
+        <p>지금 대략 천 건이 있고, 2월까지 팔천 건이 더 들어올 걸로 봅니다. 다들 밤낮없이 일하고 있어요. 저는 개발자고 그건 또 다른 얘기지만, 솔직히 불편합니다. 저 쏟아지는 정산 건수를 보면서 거기 손을 안 보태고 있다는 게요. 이해는 갑니다. 제 일이 아니니까요. 저는 파이프라인으로 증명해야 합니다.</p>
+        <p>어쨌든 <strong>사람의 검토 기록도 정답은 아닙니다.</strong> 그럼 답이 뭐냐. 제가 케이스를 만들었습니다. 이 경우엔 뭐가 틀렸다. 저 경우엔 뭐가 틀렸다. 이 서류가 이런 모양이면 이건 틀렸다.</p>
+        <p>단순한 산술은 쉬운 쪽입니다. <strong>어려운 건 그 값을 서류에서 뽑아내는 쪽입니다.</strong></p>
+        <p>참고로 대행사들을 탓할 일은 아니라고 생각합니다. 그쪽도 밤낮없이 일하고, 이건 본업 옆에 붙은 일이에요. 장학금 받으려고 하는 비교과 활동 같은 겁니다. 본업인 마케팅은 따로 있고, 이건 상대적으로 쉬운 돈을 받으려고 하는 일이죠. 물론 실제로는 별로 쉽지 않습니다만. 어쨌든 가이드라인을 공부할 시간이 많지 않습니다. 이 바닥이 처음이 아닌 곳은 잘 냅니다. 처음인 곳은 못 냅니다. 충분히 이해가 갑니다. 다만 동시에 우리 모두를 좀 아프게 하죠.</p>
+        <hr>
+        <h2 id="section-12">파이프라인</h2>
+        <p>그래서 여러 겹을 쌓아서 검토 정확도를 올렸습니다. 지금 구조는 이렇습니다.</p>
+        <p><strong>1단계, 수집과 정규화.</strong> 모든 파일을 PDF로 변환합니다. 이게 또 하나의 이야기인데, 한국 표준인 HWP를 PDF로 바꾸는 것도 고역이었습니다. 엑셀도 있고요. 이미지는 보통 이미지로 두지만, 그날 기분에 따라 PDF로 바꾸기도 합니다. 어쨌든 내려받고, 변환하고, 검토 건별로 나누고, 클라우드에 올리는 걸 완전히 자동화했습니다.</p>
+        <p>이게 제가 입사하고 처음 만든 겁니다. 작년 4~5월쯤이었네요. 어렵지 않았습니다. 간단한 TUI에 타입스크립트, 셀레니움, 파이썬을 썼습니다. 그냥 자동화죠. 로그인도 크롬을 열 필요 없이, 파일 하나 열고 설정 누르고 다운로드 누르면 새로 올라온 것만 받아집니다. 그걸 알아내려고 엑셀을 받아서 이전 것과 비교하는 작업도 넣었고요. 그게 다운로더 파이프라인의 일부입니다.</p>
+        <p><strong>2단계, 분류.</strong> PDF는 다 모였는데, 이게 무슨 서류인지는 어떻게 정하느냐. 대부분은 기업들이 친절하게 알아볼 수 있는 이름으로 바꿔서 줍니다. 그건 그냥 믿습니다. 그대로 받아들이고 점수를 매깁니다. 이 서류가 이렇게 생겼으면 앞에 1번, 아니고 다른 거면 2번. 이런 식으로 이름이 아니라 번호로 라벨을 붙입니다.</p>
+        <p>그런데 그게 안 되는 경우가 있습니다. 이게 대체 무슨 서류인지 알 수가 없는 거죠. 예를 들어 파일 이름이 <code>1509FFFFGHDP.096XGVCQERTT.pdf</code> 이런 식이면, 열어 보기 전에는 알 방법이 없습니다. 이 다운로드 과정에는 OCR이나 PDF 텍스트 스캔을 넣지 않았기 때문에, 그냥 앞에 99를 붙여 둡니다. 다운로드가 끝나면 클라우드에 그런대로 정렬이 되어 있습니다.</p>
+        <p><strong>3단계, 카드.</strong> 이제 아까 말한 LLM 검토를 씁니다. 단, 판정을 시키는 게 아닙니다. LLM에게 각 건을 읽히고 이게 무슨 서류인지 판단하게 합니다. <strong>그다음에야</strong> 그 서류의 값을 넣습니다. 서류마다 JSON 파일을 하나씩 만드는데, 저는 이걸 <strong>카드</strong>라고 부릅니다. 그 서류가 가져야 할 값들이 들어 있는 거죠. 양식이 있는 서류라면 최소한 뭔가는 있어야 하잖아요.</p>
+        <p>LLM이 하는 일은 서류를 읽고 값을 뽑아서 카드에 적는 것까지입니다. 거기까지입니다.</p>
+        <p><strong>4단계, 룰셋.</strong> 카드의 값들이 다음 파이프라인으로 넘어갑니다. 룰셋이 계산합니다. 이 값이 저 값과 맞는지, 금액이 금액과 맞는지, 환율이 계산과 맞는지, 환율 적용일이 영수증 발송일과 맞는지, 요청 금액이 맞는지.</p>
+        <p><strong>작동했습니다.</strong> 솔직히 놀랐습니다.</p>
+        <p><strong>5단계, 결과.</strong> 모든 룰을 통과해야 합니다. 다른 룰이 전부 통과해도 하나가 걸리면 반려입니다. 그리고 결과로 텍스트 파일이 나옵니다. 기업에 복사해서 보낼 메시지가 들어 있습니다.</p>
+        <hr>
+        <h2 id="500">500페이지짜리 인보이스</h2>
+        <p>중간에 벽이 하나 있었습니다.</p>
+        <p>LLM이 모든 페이지를 훑는 건 엄청나게 느립니다. 서류가 많지 않으면 상관없어요. 그런데 어떤 서류는 <strong>500페이지</strong>입니다.</p>
+        <p>왜냐고요? 대행사를 안 쓰는 기업들이 있습니다. 직접 메타에 광고를 집행하는 곳들이요. 그런 곳이 3개월치 메타 인보이스로 정산을 요청하면, 그 인보이스가 불규칙합니다. 단순한 입출금 한 건이 아니에요. 얼마를 냈고, 조회수가 얼마나 나와서 얼마가 차감됐고, 돈을 얼마 출금했고, 무슨 이유에서인지 일부가 환불되고. 이런 게 전부 들어 있습니다. 그래서 500페이지까지 갑니다.</p>
+        <p>사람이 읽을 수 있는 양이 아닙니다. AI 없이 이걸 어떻게 읽습니까.</p>
+        <p>그래서 단계를 나눴습니다. PDF에 텍스트가 살아 있으면 텍스트를 그대로 뽑아서 LLM에 넣습니다. 그게 제일 좋습니다. 텍스트가 없으면 OCR을 돌립니다. 다만 OCR은 완벽하지 않습니다. 특히 해상도가 낮으면요. 그래서 OCR은 돌리되 <strong>LLM 판독의 보조로만</strong> 씁니다.</p>
+        <p>그리고 PDF 안에 이미지가 들어 있는 경우가 있습니다. 대시보드 캡처 같은 것들이요. 그건 봐야만 값을 알 수 있습니다. 그런 건 LLM이 필요합니다.</p>
+        <p>사실 거기서 봐야 하는 건 단순합니다. 국가, 그리고 날짜. 대시보드의 날짜가 실제 광고 캠페인 기간과 맞는지, 제출일과 맞는지. 타깃 오디언스와 제품도 봐야 하고요. 여기서 제품은 실제 상품일 수도 있고 유튜브 영상이나 메타 영상 같은 광고물일 수도 있습니다.</p>
+        <hr>
+        <h2 id="section-14">지금 막혀 있는 곳</h2>
+        <p>그래서 LLM이 서류를 읽고, 각 서류와 양식마다 카드를 만듭니다. 비정형이고 구조가 제각각인 서류를 위한 별도 카드도 만듭니다. 그다음 그 값이 룰셋으로 넘어갑니다.</p>
+        <p>작동은 합니다. 그런데 어떤 부분은 여전히 아픕니다. 특히 <strong>누락 필드</strong>입니다.</p>
+        <p>지금 제가 씨름하고 있는 게 이겁니다. 이건 추출의 문제가 아닙니다. 제가 설정한 룰셋 자체의 문제입니다. "이게 없으면 반려" 이렇게 한 줄 넣어 뒀는데, 그게 <strong>모든 서류에 똑같이 적용됩니다.</strong> 그래서 하나라도 빠지면 그냥 반려가 됩니다.</p>
+        <p>그런데 실제로는, 모든 경우는 아니지만 많은 경우에 그 값이 <strong>다른 서류에서 보완됩니다.</strong> 그럼 "다른 데서 증명됐다"고 보고 통과시켜야 합니다.</p>
+        <p>즉 룰이 <strong>서류 단위가 아니라 검토 건 단위</strong>로 물어야 합니다. "이 서류에 이 칸이 있는가"가 아니라 "이 건 전체에서 이 사실이 증명되었는가"로요. 지금 그걸 고치고 있습니다.</p>
+        <p>그리고 솔직히 말하면, 애매한 건 전부 사람에게 넘기는 지금 처리는 <strong>게으른 코드</strong>입니다. 저는 그걸 휴먼 리뷰라고 부르고 있는데, 사실 그냥 게으른 거예요. 언젠가는 통과 아니면 반려로 떨어져야 합니다. 다만 경우의 수가 너무 다양해서 지금 속도로는 감당이 안 됩니다. 빨리 쳐내야 하거든요. 최소한 2월까지는요. 윗분들에게는 12월이라고 말했는데, 이미 늦었습니다.</p>
+        <hr>
+        <h2 id="section-15">그래서</h2>
+        <p>이게 제가 만든 것이고, 아직 프로덕션에서 돌아가고 있습니다.</p>
+        <p>솔직히 재미있습니다. 개발이라는 게 존재하지 않던 회사에서 혼자 개발자로 일하는 게요.</p>
+        <p>제가 저를 개발자라고 불러도 되는지는 잘 모르겠습니다. 바이브 코더인지, AI 엔지니어인지. 제 생각에 AI 엔지니어는 확실히 아니고요. 그냥 바이브 코더인 것 같습니다. 다만 자제력이 극단적으로 강하고, 책임감이 이상할 정도로 높은 바이브 코더입니다. 받는 월급에 비하면 확실히 과한 책임감이죠.</p>
+        <p>그래도 제 이력을 생각하면 이런 기회를 얻은 게 정말 감사합니다. 시간은 걸리겠지만 언젠가는 된다고 꽤 확신하고 있습니다. 다른 사람들이 저에 대한 기대를 접고 저를 자르지만 않는다면요. 그럴 것 같지는 않은데, 또 모르죠. 안 그러길 바랍니다.</p>
+        <p>뭐, 그렇습니다.</p>
+        <p>지금까지 제가 한 일이었습니다. 감사합니다.</p>
+      </div>
+    </div>
+  </article>
+
+  <section class="art-foot">
+    <div class="wrap grid">
+      <div class="back">
+        <a class="chip" href="https://github.com/Heeeok">GitHub · @Heeeok ↗</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="bottom">
+  <div class="wrap">
+    <span>© Hyeok</span>
+    <span>Taupe · Black · Burgundy · White</span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  // highlight the section you're reading in the contents
+  const links = [...document.querySelectorAll('#toc a')];
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) links.forEach(a => a.setAttribute('aria-current', a.getAttribute('href') === '#' + e.target.id));
+  }), { rootMargin: '-20% 0px -70% 0px' });
+  document.querySelectorAll('.art-body h2').forEach(h => io.observe(h));
+})();
+</script>
+</body>
+</html>

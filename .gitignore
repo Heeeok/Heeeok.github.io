@@ -1,0 +1,4 @@
+# local drafts — the article lives in writing/ once it's ready
+drafts/
+.claude/
+.DS_Store
